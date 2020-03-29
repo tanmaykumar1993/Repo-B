@@ -1,0 +1,17 @@
+#Repository B workflow (Response)
+
+name: Remote Dispatch Action Responder
+ 
+on: [repository_dispatch]
+ 
+jobs:
+  dispatch-response:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Event Details
+        run: |
+          echo "Event '${{ github.event.action }}' received from '${{ github.event.client_payload.repository }}'"
+      - name: Sending Response to remote on dispatch
+        if: github.event.action == 'dispatch'
+        run: |
+          curl -X POST https://api.github.com/repos/tanmaykumar1993/Repo-A/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -u ${{ secrets.ACCESS_TOKEN }} --data '{"event_type": "response", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
